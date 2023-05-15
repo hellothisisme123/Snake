@@ -54,14 +54,21 @@ let game = {
 }
 
 function roundDownToMultiple(num, mult) {
+    console.log(num - (num % mult))
     return num - (num % mult);
 } 
 
 // sets the starting canvas position
 if (canvasWrapper.clientWidth < canvasWrapper.clientHeight) {
+    console.log(canvasWrapper.clientWidth, canvasWrapper.clientHeight)
+    console.log('a');
+
     canvas.width = roundDownToMultiple(canvasWrapper.clientWidth, game.gridSize)
     canvas.height = canvas.width
 } else if (canvasWrapper.clientWidth > canvasWrapper.clientHeight) {
+    console.log(canvasWrapper.clientWidth, canvasWrapper.clientHeight)
+    console.log('b');
+
     canvas.width = roundDownToMultiple(canvasWrapper.clientHeight, game.gridSize)
     canvas.height = canvas.width
 } else {
