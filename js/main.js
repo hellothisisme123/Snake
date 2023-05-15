@@ -24,7 +24,7 @@ let game = {
     
     // canvas.width hasnt been set yet
     // canvasSize: canvas.width,
-    gridSize: 3,
+    gridSize: 15,
     // blockSize: canvas.width / game.gridSize,
     direction: 'right',
     body: [
@@ -88,9 +88,9 @@ game.berryPosition.x = Math.floor(Math.random() * game.gridSize) * game.blockSiz
 game.berryPosition.y = Math.floor(Math.random() * game.gridSize) * game.blockSize
 
 function playerDeath() {
-    // clearInterval(playTime)
+    clearInterval(playTime)
 
-    // winScreen.animate({top: '10%'}, {duration: 250, fill: 'forwards'})
+    winScreen.animate({top: '10%'}, {duration: 250, fill: 'forwards'})
 }
 
 function eatBerry() {
@@ -104,16 +104,12 @@ function eatBerry() {
     game.berryPosition.x = Math.floor(Math.random() * game.gridSize) * game.blockSize
     game.berryPosition.y = Math.floor(Math.random() * game.gridSize) * game.blockSize
 
-    // if (checkBerryPosWithBody()) 
-
     function checkBerryPosWithBody() {
         game.body.forEach(block => {
-            // console.log('checked berry position with body')
             if (block.x == game.berryPosition.x && block.y == game.berryPosition.y) {
                 game.berryPosition.x = Math.floor(Math.random() * game.gridSize) * game.blockSize
                 game.berryPosition.y = Math.floor(Math.random() * game.gridSize) * game.blockSize
 
-                console.log('looped')
                 checkBerryPosWithBody()
             }
         })
@@ -267,4 +263,58 @@ window.addEventListener('keydown', (e) => {
 
     // stops user from changing direction again until canChangeDirection is set to true after the next move
     game.canChangeDirection = false
+})
+
+
+
+// start and end variables to determine change
+let touchstartX = 0
+let touchendX = 0
+
+let touchstartY = 0
+let touchendY = 0
+    
+// determines which axis changed more 
+// then what direction the user swiped on that axis
+function checkDirection() {
+    let xDif = Math.abs(touchstartX - touchendX)
+    let yDif = Math.abs(touchstartY - touchendY)
+
+    if (xDif > yDif) {
+        if (touchendX < touchstartX) {
+            // left
+            if (game.direction == 'right') return
+            game.direction = 'left'
+        }
+        if (touchendX > touchstartX) {
+            // right
+            if (game.direction == 'left') return
+            game.direction = 'right'
+        }
+    } else if (yDif > xDif) {
+        if (touchendY < touchstartY) {
+            // up
+            if (game.direction == 'down') return
+            game.direction = 'up'
+        }
+        if (touchendY > touchstartY) {
+            // down
+            if (game.direction == 'up') return
+            game.direction = 'down'
+        }
+    }
+}
+
+// sets the start variables
+document.addEventListener('touchstart', e => {
+    touchstartX = e.changedTouches[0].screenX
+    touchstartY = e.changedTouches[0].screenY
+})
+
+// sets the end variables
+// and runs the function to determine the direction of the swipe
+document.addEventListener('touchend', e => {
+    touchendX = e.changedTouches[0].screenX
+    touchendY = e.changedTouches[0].screenY
+    checkDirection()
 })
