@@ -37,7 +37,7 @@ let game = {
         x: 0,
         y: 0
     },
-    bodyLength: 3,
+    bodyLength: 50,
     controls: {
         up: ['w', 'ArrowUp'],
         left: ['a', 'ArrowLeft'],
@@ -50,8 +50,55 @@ let game = {
     },
     berries: 0,
     timeScale: 1 / 6,
-    canChangeDirection: true
+    canChangeDirection: true,
+    backgroundTiles: [
+        new Image(),
+        new Image(),
+        new Image(),
+        new Image()
+    ],
+    berryTile: new Image(),
+    snakeTiles: {
+        curved: [
+            new Image(),
+            new Image(),
+            new Image(),
+            new Image()
+        ],
+        straight: [
+            new Image(),
+            new Image()
+        ],
+        head: [
+            new Image(),
+            new Image(),
+            new Image(),
+            new Image()
+        ],
+        tail: [
+            new Image(),
+            new Image(),
+            new Image(),
+            new Image()
+        ]
+    }
 }
+game.backgroundTiles.forEach((img, i) => {
+    img.src = `../production/tiles/sandTile${i}.png`
+})
+game.berryTile.src = '../production/tiles/berryTile.png'
+game.snakeTiles.head.forEach((img, i) => {
+    img.src = `../production/tiles/snakeface${i}.png`
+})
+game.snakeTiles.tail.forEach((img, i) => {
+    img.src = `../production/tiles/snaketail${i}.png`
+})
+game.snakeTiles.straight.forEach((img, i) => {
+    img.src = `../production/tiles/snakebody${i}.png`
+})
+game.snakeTiles.curved.forEach((img, i) => {
+    img.src = `../production/tiles/snakerotate${i}.png`
+})
 
 function roundDownToMultiple(num, mult) {
     console.log(num - (num % mult))
@@ -132,24 +179,77 @@ function moveSnake() {
     // prevents the player from changing direction twice in 1 move, allowing them to change direction into themselves
     game.canChangeDirection = true
 
-    // draw background
-    ctx.fillStyle = game.canvasBackgroundColor
-    ctx.fillRect(0, 0, game.canvasSize, game.canvasSize)
-
-    // draw berry
-    placeBerry()
-
     // sets the color for the snake
     ctx.fillStyle = game.snakeColor
 
     // draws each block of the body
-    game.body.forEach(block => {
+    game.body.forEach((block, i) => {
         ctx.fillRect(block.x, block.y, game.blockSize, game.blockSize)
     })
 
-    // draws the head
-    ctx.fillRect(game.position.x, game.position.y, game.blockSize, game.blockSize)
+    // draws the tail
+    if (game.body.length >= 2) {
+        game.body.forEach((block, i) => {
+            if (i < 1) return 
+            if (game.body[i].x > game.body[i - 1].x) {
+                // no longer draws the head
+                if (i == 0) return
 
+
+                if (game.body[i].x > game.body[i - 1].x) {
+                    console.log('left')
+                    // if (!game.body[i+1]) return
+
+                    // console.log('there is another block')
+                    ctx.drawImage(game.snakeTiles.straight[1], block.x, block.y, game.blockSize, game.blockSize)
+                } else if (game.body[i].x < game.body[i - 1].x) {
+                    console.log('right')
+                    // if (!game.body[i+1]) return
+
+                    // console.log('there is another block')
+                    ctx.drawImage(game.snakeTiles.straight[0], block.x, block.y, game.blockSize, game.blockSize)
+                }
+            }
+        })
+    }
+
+    // draws tail copy paste
+    // ctx.drawImage(game.snakeTiles.tail[0], game.body[game.body.length - 1].x, game.body[game.body.length - 1].y, game.blockSize, game.blockSize)
+
+
+    // draws the head
+    // ctx.fillRect(game.position.x, game.position.y, game.blockSize, game.blockSize)
+    if (game.direction == 'up') {
+        ctx.drawImage(game.snakeTiles.head[0], game.position.x, game.position.y, game.blockSize, game.blockSize)
+    } else if (game.direction == 'down') {
+        ctx.drawImage(game.snakeTiles.head[2], game.position.x, game.position.y, game.blockSize, game.blockSize)
+    } else if (game.direction == 'left') {
+        ctx.drawImage(game.snakeTiles.head[3], game.position.x, game.position.y, game.blockSize, game.blockSize)
+    } else if (game.direction == 'right') {
+        ctx.drawImage(game.snakeTiles.head[1], game.position.x, game.position.y, game.blockSize, game.blockSize)
+    }
+
+    checkSnakeCollisions()
+    
+    // increments the position
+    if (game.direction == 'up') {
+        game.position.y += -game.blockSize
+    } else if (game.direction == 'right') {
+        game.position.x += game.blockSize
+    } else if (game.direction == 'down') {
+        game.position.y += game.blockSize
+    } else if (game.direction == 'left') {
+        game.position.x += -game.blockSize
+    }
+
+    // adds the position of the snake to the body array
+    game.body.unshift({x: game.position.x, y: game.position.y})
+
+    // removes last block of the body whenever the body length is lower than the 
+    if (game.body.length > game.bodyLength) game.body.pop()
+}
+
+function checkSnakeCollisions() {
     // check for collisions with self
     game.body.forEach(block => {
         if (game.direction == 'up') {
@@ -221,31 +321,47 @@ function moveSnake() {
             eatBerry()
         }
     }
-    
-    // increments the position
-    if (game.direction == 'up') {
-        game.position.y += -game.blockSize
-    } else if (game.direction == 'right') {
-        game.position.x += game.blockSize
-    } else if (game.direction == 'down') {
-        game.position.y += game.blockSize
-    } else if (game.direction == 'left') {
-        game.position.x += -game.blockSize
-    }
-
-    // adds the position of the snake to the body array
-    game.body.unshift({x: game.position.x, y: game.position.y})
-
-    // removes last block of the body whenever the body length is lower than the 
-    if (game.body.length > game.bodyLength) game.body.pop()
 }
 
 function placeBerry() {
-    ctx.fillStyle = game.berryColor
-    ctx.fillRect(game.berryPosition.x, game.berryPosition.y, game.blockSize, game.blockSize)
+    // exact hitbox
+    // ctx.fillStyle = game.berryColor
+    // ctx.fillRect(game.berryPosition.x, game.berryPosition.y, game.blockSize, game.blockSize)
+
+    // image sprite
+    ctx.drawImage(game.berryTile, game.berryPosition.x, game.berryPosition.y, game.blockSize, game.blockSize)
 }
 
+function drawBackground() {
+    // draw background
+    for (let col = 0; col < game.gridSize; col++) {
+        for (let row = 0; row < game.gridSize; row++) {
+            // draws in a grid
+            ctx.strokeStyle = 'rgb(0,0,0,0.2)'
+            ctx.lineWidth = '1'
+            ctx.strokeRect(col * game.blockSize, row * game.blockSize, game.blockSize, game.blockSize)
+
+            // converts the specific cell index into base 4
+            let cell = col * game.gridSize + row
+            cell %= 4
+            
+            // draws in the tiles image
+            ctx.drawImage(game.backgroundTiles[cell], col * game.blockSize, row * game.blockSize, game.blockSize, game.blockSize)
+        }
+    }
+}
+
+setTimeout(() => {
+}, 100);
+
 let playTime = setInterval(() => {
+    // draws background
+    drawBackground()
+
+    // draws berry
+    placeBerry()
+
+    // draws snake
     moveSnake()
 }, 1000 * game.timeScale);
 

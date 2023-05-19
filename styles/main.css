@@ -82,4 +82,5 @@ canvas {
     border-radius: 4px;
     flex-grow: 0;
     flex-shrink: 0;
+    image-rendering: crisp-edges;
 }
