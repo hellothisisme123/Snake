@@ -84,7 +84,7 @@ let game = {
     }
 }
 game.backgroundTiles.forEach((img, i) => {
-    img.src = `../production/tiles/sandTile${i}.png`
+    img.src = `../production/tiles/sandtile${i}.png`
 })
 game.berryTile.src = './production/tiles/berryTile.png'
 game.snakeTiles.head.forEach((img, i) => {
