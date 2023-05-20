@@ -37,7 +37,7 @@ let game = {
         x: 0,
         y: 0
     },
-    bodyLength: 20,
+    bodyLength: 2,
     controls: {
         up: ['w', 'ArrowUp'],
         left: ['a', 'ArrowLeft'],
