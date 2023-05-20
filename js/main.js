@@ -37,7 +37,7 @@ let game = {
         x: 0,
         y: 0
     },
-    bodyLength: 50,
+    bodyLength: 20,
     controls: {
         up: ['w', 'ArrowUp'],
         left: ['a', 'ArrowLeft'],
@@ -174,60 +174,95 @@ function eatBerry() {
     points.innerHTML = `Points: ${game.berries}`
 }
 
+function drawSnake() {
+    // draws the tail of the snake
+    // called from drawBody()
+    function drawTail(block, i) {
+        if (game.body[i].x > game.body[i - 1].x) {
+            ctx.drawImage(game.snakeTiles.tail[3], block.x, block.y, game.blockSize, game.blockSize)
+        } else if (game.body[i].x < game.body[i - 1].x) {
+            ctx.drawImage(game.snakeTiles.tail[1], block.x, block.y, game.blockSize, game.blockSize)
+        } else if (game.body[i].y > game.body[i - 1].y) {
+            ctx.drawImage(game.snakeTiles.tail[0], block.x, block.y, game.blockSize, game.blockSize)
+        } else if (game.body[i].y < game.body[i - 1].y) {
+            ctx.drawImage(game.snakeTiles.tail[2], block.x, block.y, game.blockSize, game.blockSize)
+        } 
+    }
+
+    // draws the body of each block
+    drawBody()
+    function drawBody() {
+        if (game.body.length >= 2) {
+            game.body.forEach((block, i) => {
+                if (i < 1) return 
+    
+                // checks if its the tail
+                if (!game.body[i + 1]) {
+                    drawTail(block, i)
+                    return
+                }
+                
+                // checks if its a corner
+                if (game.body[i].x > game.body[i-1].x && game.body[i].y > game.body[i+1].y || game.body[i].y > game.body[i-1].y && game.body[i].x > game.body[i+1].x) {
+                    // down left || right up
+                    ctx.drawImage(game.snakeTiles.curved[2], block.x, block.y, game.blockSize, game.blockSize)
+                    return
+                } else if (game.body[i].x < game.body[i-1].x && game.body[i].y > game.body[i+1].y || game.body[i].y > game.body[i-1].y && game.body[i].x < game.body[i+1].x) {
+                    // down right || left up
+                    ctx.drawImage(game.snakeTiles.curved[3], block.x, block.y, game.blockSize, game.blockSize)
+                    return
+                } else if (game.body[i].x > game.body[i-1].x && game.body[i].y < game.body[i+1].y || game.body[i].y < game.body[i-1].y && game.body[i].x > game.body[i+1].x) {
+                    // up left || right down
+                    ctx.drawImage(game.snakeTiles.curved[1], block.x, block.y, game.blockSize, game.blockSize)
+                    return
+                } else if (game.body[i].x < game.body[i-1].x && game.body[i].y < game.body[i+1].y || game.body[i].y < game.body[i-1].y && game.body[i].x < game.body[i+1].x) {
+                    // up right || left down
+                    ctx.drawImage(game.snakeTiles.curved[0], block.x, block.y, game.blockSize, game.blockSize)
+                    return
+                }
+    
+                if (game.body[i].x > game.body[i - 1].x || game.body[i].x < game.body[i - 1].x) {
+                    // draws horizontal snake block
+                    ctx.drawImage(game.snakeTiles.straight[1], block.x, block.y, game.blockSize, game.blockSize)
+                } else if (game.body[i].y < game.body[i - 1].y || game.body[i].y > game.body[i - 1].y) {
+                    // draws horizontal snake block
+                    ctx.drawImage(game.snakeTiles.straight[0], block.x, block.y, game.blockSize, game.blockSize)
+                }
+            })
+        }
+    }
+
+    // draws the head
+    drawHead()
+    function drawHead() {
+        if (!game.body[1]) {
+            if (game.direction == 'up') {
+                ctx.drawImage(game.snakeTiles.head[0], game.body[0].x, game.body[0].y, game.blockSize, game.blockSize)
+            } else if (game.direction == 'down') {
+                ctx.drawImage(game.snakeTiles.head[2], game.body[0].x, game.body[0].y, game.blockSize, game.blockSize)
+            } else if (game.direction == 'left') {
+                ctx.drawImage(game.snakeTiles.head[3], game.body[0].x, game.body[0].y, game.blockSize, game.blockSize)
+            } else if (game.direction == 'right') {
+                ctx.drawImage(game.snakeTiles.head[1], game.body[0].x, game.body[0].y, game.blockSize, game.blockSize)
+            }
+        } else {
+            if (game.body[0].y < game.body[1].y) {
+                ctx.drawImage(game.snakeTiles.head[0], game.body[0].x, game.body[0].y, game.blockSize, game.blockSize)
+            } else if (game.body[0].y > game.body[1].y) {
+                ctx.drawImage(game.snakeTiles.head[2], game.body[0].x, game.body[0].y, game.blockSize, game.blockSize)
+            } else if (game.body[0].x < game.body[1].x) {
+                ctx.drawImage(game.snakeTiles.head[3], game.body[0].x, game.body[0].y, game.blockSize, game.blockSize)
+            } else if (game.body[0].x > game.body[1].x) {
+                ctx.drawImage(game.snakeTiles.head[1], game.body[0].x, game.body[0].y, game.blockSize, game.blockSize)
+            }
+        }
+    }
+}
+
 function moveSnake() {
     // allows the player to change direction
     // prevents the player from changing direction twice in 1 move, allowing them to change direction into themselves
     game.canChangeDirection = true
-
-    // sets the color for the snake
-    ctx.fillStyle = game.snakeColor
-
-    // draws each block of the body
-    game.body.forEach((block, i) => {
-        ctx.fillRect(block.x, block.y, game.blockSize, game.blockSize)
-    })
-
-    // draws the tail
-    if (game.body.length >= 2) {
-        game.body.forEach((block, i) => {
-            if (i < 1) return 
-            if (game.body[i].x > game.body[i - 1].x) {
-                // no longer draws the head
-                if (i == 0) return
-
-
-                if (game.body[i].x > game.body[i - 1].x) {
-                    console.log('left')
-                    // if (!game.body[i+1]) return
-
-                    // console.log('there is another block')
-                    ctx.drawImage(game.snakeTiles.straight[1], block.x, block.y, game.blockSize, game.blockSize)
-                } else if (game.body[i].x < game.body[i - 1].x) {
-                    console.log('right')
-                    // if (!game.body[i+1]) return
-
-                    // console.log('there is another block')
-                    ctx.drawImage(game.snakeTiles.straight[0], block.x, block.y, game.blockSize, game.blockSize)
-                }
-            }
-        })
-    }
-
-    // draws tail copy paste
-    // ctx.drawImage(game.snakeTiles.tail[0], game.body[game.body.length - 1].x, game.body[game.body.length - 1].y, game.blockSize, game.blockSize)
-
-
-    // draws the head
-    // ctx.fillRect(game.position.x, game.position.y, game.blockSize, game.blockSize)
-    if (game.direction == 'up') {
-        ctx.drawImage(game.snakeTiles.head[0], game.position.x, game.position.y, game.blockSize, game.blockSize)
-    } else if (game.direction == 'down') {
-        ctx.drawImage(game.snakeTiles.head[2], game.position.x, game.position.y, game.blockSize, game.blockSize)
-    } else if (game.direction == 'left') {
-        ctx.drawImage(game.snakeTiles.head[3], game.position.x, game.position.y, game.blockSize, game.blockSize)
-    } else if (game.direction == 'right') {
-        ctx.drawImage(game.snakeTiles.head[1], game.position.x, game.position.y, game.blockSize, game.blockSize)
-    }
 
     checkSnakeCollisions()
     
@@ -351,9 +386,6 @@ function drawBackground() {
     }
 }
 
-setTimeout(() => {
-}, 100);
-
 let playTime = setInterval(() => {
     // draws background
     drawBackground()
@@ -361,7 +393,10 @@ let playTime = setInterval(() => {
     // draws berry
     placeBerry()
 
-    // draws snake
+    // draws the snake
+    drawSnake()
+
+    // adjusts the snakes position
     moveSnake()
 }, 1000 * game.timeScale);
 
@@ -388,56 +423,57 @@ window.addEventListener('keydown', (e) => {
     game.canChangeDirection = false
 })
 
-
-
-// start and end variables to determine change
-let touchstartX = 0
-let touchendX = 0
-
-let touchstartY = 0
-let touchendY = 0
+enableMobileControls()
+function enableMobileControls() {
+    // start and end variables to determine change
+    let touchstartX = 0
+    let touchendX = 0
     
-// determines which axis changed more 
-// then what direction the user swiped on that axis
-function checkDirection() {
-    let xDif = Math.abs(touchstartX - touchendX)
-    let yDif = Math.abs(touchstartY - touchendY)
-
-    if (xDif > yDif) {
-        if (touchendX < touchstartX) {
-            // left
-            if (game.direction == 'right') return
-            game.direction = 'left'
-        }
-        if (touchendX > touchstartX) {
-            // right
-            if (game.direction == 'left') return
-            game.direction = 'right'
-        }
-    } else if (yDif > xDif) {
-        if (touchendY < touchstartY) {
-            // up
-            if (game.direction == 'down') return
-            game.direction = 'up'
-        }
-        if (touchendY > touchstartY) {
-            // down
-            if (game.direction == 'up') return
-            game.direction = 'down'
+    let touchstartY = 0
+    let touchendY = 0
+        
+    // determines which axis changed more 
+    // then what direction the user swiped on that axis
+    function checkDirection() {
+        let xDif = Math.abs(touchstartX - touchendX)
+        let yDif = Math.abs(touchstartY - touchendY)
+    
+        if (xDif > yDif) {
+            if (touchendX < touchstartX) {
+                // left
+                if (game.direction == 'right') return
+                game.direction = 'left'
+            }
+            if (touchendX > touchstartX) {
+                // right
+                if (game.direction == 'left') return
+                game.direction = 'right'
+            }
+        } else if (yDif > xDif) {
+            if (touchendY < touchstartY) {
+                // up
+                if (game.direction == 'down') return
+                game.direction = 'up'
+            }
+            if (touchendY > touchstartY) {
+                // down
+                if (game.direction == 'up') return
+                game.direction = 'down'
+            }
         }
     }
+    
+    // sets the start variables
+    document.addEventListener('touchstart', e => {
+        touchstartX = e.changedTouches[0].screenX
+        touchstartY = e.changedTouches[0].screenY
+    })
+    
+    // sets the end variables
+    // and runs the function to determine the direction of the swipe
+    document.addEventListener('touchend', e => {
+        touchendX = e.changedTouches[0].screenX
+        touchendY = e.changedTouches[0].screenY
+        checkDirection()
+    })
 }
-
-// sets the start variables
-document.addEventListener('touchstart', e => {
-    touchstartX = e.changedTouches[0].screenX
-    touchstartY = e.changedTouches[0].screenY
-})
-
-// sets the end variables
-// and runs the function to determine the direction of the swipe
-document.addEventListener('touchend', e => {
-    touchendX = e.changedTouches[0].screenX
-    touchendY = e.changedTouches[0].screenY
-    checkDirection()
-})

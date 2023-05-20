@@ -11,10 +11,8 @@ html {
 }
 
 :root {
-    --snakeColor: #96E6B3;
     --backgroundColor: #2b2b2b;
     --canvasBackgroundColor: #24663C;
-    --berryColor: #E03731;
     --mainTriadicColor: #fff3;
 }
 
