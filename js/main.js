@@ -86,15 +86,15 @@ let game = {
 game.backgroundTiles.forEach((img, i) => {
     img.src = `../production/tiles/sandTile${i}.png`
 })
-game.berryTile.src = '../production/tiles/berryTile.png'
+game.berryTile.src = './production/tiles/berryTile.png'
 game.snakeTiles.head.forEach((img, i) => {
-    img.src = `../production/tiles/snakeface${i}.png`
+    img.src = `./production/tiles/snakeface${i}.png`
 })
 game.snakeTiles.tail.forEach((img, i) => {
-    img.src = `../production/tiles/snaketail${i}.png`
+    img.src = `./production/tiles/snaketail${i}.png`
 })
 game.snakeTiles.straight.forEach((img, i) => {
-    img.src = `../production/tiles/snakebody${i}.png`
+    img.src = `./production/tiles/snakebody${i}.png`
 })
 game.snakeTiles.curved.forEach((img, i) => {
     img.src = `../production/tiles/snakerotate${i}.png`
