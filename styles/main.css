@@ -1,9 +1,9 @@
 * {
     margin: 0;
     padding: 0;
-    font-family: Calibri;
-    color: #fff;
+    color: var(--font-color);
     box-sizing: border-box;
+    font-family: Inter;
 }
 
 html {
@@ -11,24 +11,154 @@ html {
 }
 
 :root {
-    --backgroundColor: #2b2b2b;
-    --canvasBackgroundColor: #24663C;
-    --mainTriadicColor: #fff3;
+    --green-1: #37A14D;
+    --green-2: #0C541B;
+    --red-1: #ED687A;
+    --red-2: #A13746;
+    --font-color: #fff;
+
+    --red-2-text-stroke: -5px -5px 0px var(--red-2),
+    -5px -4px 0px var(--red-2),
+    -5px -3px 0px var(--red-2),
+    -5px -2px 0px var(--red-2),
+    -5px -1px 0px var(--red-2),
+    -5px 0px 0px var(--red-2),
+    -5px 1px 0px var(--red-2),
+    -5px 2px 0px var(--red-2),
+    -5px 3px 0px var(--red-2),
+    -5px 4px 0px var(--red-2),
+    -5px 5px 0px var(--red-2),
+    -4px -5px 0px var(--red-2),
+    -4px -4px 0px var(--red-2),
+    -4px -3px 0px var(--red-2),
+    -4px -2px 0px var(--red-2),
+    -4px -1px 0px var(--red-2),
+    -4px 0px 0px var(--red-2),
+    -4px 1px 0px var(--red-2),
+    -4px 2px 0px var(--red-2),
+    -4px 3px 0px var(--red-2),
+    -4px 4px 0px var(--red-2),
+    -4px 5px 0px var(--red-2),
+    -3px -5px 0px var(--red-2),
+    -3px -4px 0px var(--red-2),
+    -3px -3px 0px var(--red-2),
+    -3px -2px 0px var(--red-2),
+    -3px -1px 0px var(--red-2),
+    -3px 0px 0px var(--red-2),
+    -3px 1px 0px var(--red-2),
+    -3px 2px 0px var(--red-2),
+    -3px 3px 0px var(--red-2),
+    -3px 4px 0px var(--red-2),
+    -3px 5px 0px var(--red-2),
+    -2px -5px 0px var(--red-2),
+    -2px -4px 0px var(--red-2),
+    -2px -3px 0px var(--red-2),
+    -2px -2px 0px var(--red-2),
+    -2px -1px 0px var(--red-2),
+    -2px 0px 0px var(--red-2),
+    -2px 1px 0px var(--red-2),
+    -2px 2px 0px var(--red-2),
+    -2px 3px 0px var(--red-2),
+    -2px 4px 0px var(--red-2),
+    -2px 5px 0px var(--red-2),
+    -1px -5px 0px var(--red-2),
+    -1px -4px 0px var(--red-2),
+    -1px -3px 0px var(--red-2),
+    -1px -2px 0px var(--red-2),
+    -1px -1px 0px var(--red-2),
+    -1px 0px 0px var(--red-2),
+    -1px 1px 0px var(--red-2),
+    -1px 2px 0px var(--red-2),
+    -1px 3px 0px var(--red-2),
+    -1px 4px 0px var(--red-2),
+    -1px 5px 0px var(--red-2),
+    0px -5px 0px var(--red-2),
+    0px -4px 0px var(--red-2),
+    0px -3px 0px var(--red-2),
+    0px -2px 0px var(--red-2),
+    0px -1px 0px var(--red-2),
+    0px 1px 0px var(--red-2),
+    0px 2px 0px var(--red-2),
+    0px 3px 0px var(--red-2),
+    0px 4px 0px var(--red-2),
+    0px 5px 0px var(--red-2),
+    1px -5px 0px var(--red-2),
+    1px -4px 0px var(--red-2),
+    1px -3px 0px var(--red-2),
+    1px -2px 0px var(--red-2),
+    1px -1px 0px var(--red-2),
+    1px 0px 0px var(--red-2),
+    1px 1px 0px var(--red-2),
+    1px 2px 0px var(--red-2),
+    1px 3px 0px var(--red-2),
+    1px 4px 0px var(--red-2),
+    1px 5px 0px var(--red-2),
+    2px -5px 0px var(--red-2),
+    2px -4px 0px var(--red-2),
+    2px -3px 0px var(--red-2),
+    2px -2px 0px var(--red-2),
+    2px -1px 0px var(--red-2),
+    2px 0px 0px var(--red-2),
+    2px 1px 0px var(--red-2),
+    2px 2px 0px var(--red-2),
+    2px 3px 0px var(--red-2),
+    2px 4px 0px var(--red-2),
+    2px 5px 0px var(--red-2),
+    3px -5px 0px var(--red-2),
+    3px -4px 0px var(--red-2),
+    3px -3px 0px var(--red-2),
+    3px -2px 0px var(--red-2),
+    3px -1px 0px var(--red-2),
+    3px 0px 0px var(--red-2),
+    3px 1px 0px var(--red-2),
+    3px 2px 0px var(--red-2),
+    3px 3px 0px var(--red-2),
+    3px 4px 0px var(--red-2),
+    3px 5px 0px var(--red-2),
+    4px -5px 0px var(--red-2),
+    4px -4px 0px var(--red-2),
+    4px -3px 0px var(--red-2),
+    4px -2px 0px var(--red-2),
+    4px -1px 0px var(--red-2),
+    4px 0px 0px var(--red-2),
+    4px 1px 0px var(--red-2),
+    4px 2px 0px var(--red-2),
+    4px 3px 0px var(--red-2),
+    4px 4px 0px var(--red-2),
+    4px 5px 0px var(--red-2),
+    5px -5px 0px var(--red-2),
+    5px -4px 0px var(--red-2),
+    5px -3px 0px var(--red-2),
+    5px -2px 0px var(--red-2),
+    5px -1px 0px var(--red-2),
+    5px 0px 0px var(--red-2),
+    5px 1px 0px var(--red-2),
+    5px 2px 0px var(--red-2),
+    5px 3px 0px var(--red-2),
+    5px 4px 0px var(--red-2),
+    5px 5px 0px var(--red-2),
+    0px 0px 10px rgba(0, 0, 0, 0.5);
+}
+    
+@font-face {
+    font-family: Inter;
+    src: url('../production/fonts/Inter/Inter-VariableFont_slnt\,wght.ttf');
 }
 
 .container {
     width: 100%;
     min-height: 100vh;
-    background-color: var(--backgroundColor);
     display: grid;
-    grid-template-rows: 10vh 1fr;
+    grid-template-rows: 15vh 1fr;
+    grid-template-columns: 2fr 3fr 2fr;
     position: relative;
+    background-color: var(--green-2);
 }
 
 .winScreen {
-    position: absolute;
+    display: none;
+    /* position: absolute;
     width: 50%;
-    background-color: var(--mainTriadicColor);
     height: 90%;
     border-radius: 12px 12px 0 0;
     left: 50%;
@@ -37,47 +167,118 @@ html {
     justify-content: center;
     align-items: center;
     top: 100%;
-    z-index: 1000;
+    z-index: 1000; */
 }
 
-.title {
+.container > .title {
+    font-size: 10vh;
+    color: #ED687A;
+    font-weight: 900;
+    text-align: center;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 5rem;
+    background-color: var(--green-1);
+    text-shadow: var(--red-2-text-stroke);
+    grid-column: span 3;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
+    z-index: 10000;
+}
+
+.smallSpace { /* this seperates the spacing between the letters */
+    font-size: 2vh;
+}
+
+.left, .right {
+    padding-top: 10%;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+
+.title {
+    font-size: 3.5rem;
     font-weight: 900;
-    text-shadow: -5px -5px 4px #000,
-    -5px -5px 4px #000,
-    -5px -5px 4px #000;
+    text-align: center;
+}
+
+.settings, .controls {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.setting, .control {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    background-color: var(--green-1);
+    width: 75%;
+    border-radius: 8px;
+    aspect-ratio: 12 / 2;
+    font-size: 1.5rem;
+    font-weight: 700;
+    padding: 0 3%;
+}
+
+.setting > .key, .setting > .value, .control > .key, .control > .value {
+    display: flex;
+    align-items: center;
+}
+
+.setting > .key, .control > .key {
+    border-right: 5px solid var(--green-2);
+}
+
+.values {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.value {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 2.75rem;
+}
+
+.score {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin: 10%;
+}
+
+.scoreValue {
+    font-size: 2.75rem;
 }
 
 .game {
-    display: grid;
-    height: 100%;
     width: 100%;
-    grid-template-columns: 1fr 2fr 1fr;
-    position: relative;
+    height: 100%;
+    display: flex;    
+    justify-content: center;
+    align-items: center;
 }
 
 .canvasWrapper {
     width: 100%;
-    --canvasBorderWidth: 7px;
-    height: calc(100% - 2 * var(--canvasBorderWidth));
+    max-height: 75vh;
+    aspect-ratio: 1;
+    /* max-height: 70vh; */
     display: flex;
+    align-items: center;
     justify-content: center;
-    background-color: var(--backgroundColor);
-    position: relative;
-}
-
-.points {
-    position: absolute;
-    top: 0;
-    left: 0;
 }
 
 canvas {
-    border: var(--canvasBorderWidth) solid black;
-    border-radius: 4px;
+    border: 12px solid var(--green-1);
+    border-radius: 8px;
     flex-grow: 0;
     flex-shrink: 0;
     image-rendering: crisp-edges;

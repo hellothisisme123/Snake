@@ -16,14 +16,82 @@
             <div class="title">You Lose!</div>
         </div>
 
-        <div class="title">SNAKE</div>
-        <div class="game">
-            <div class="directions"></div>
-            <div class="canvasWrapper">
-                <div class="points">Points: 0</div>
-                <canvas></canvas>
+        <div class="title">
+            S
+            <span class="smallSpace"> </span>
+            N
+            <span class="smallSpace"> </span>
+            A
+            <span class="smallSpace"> </span>
+            K
+            <span class="smallSpace"> </span>
+            E
+        </div>
+        
+        <div class="left">
+            <div class="settings">
+                <div class="title">Settings</div>
+                <div class="setting">
+                    <div class="key" data-key="timeScale">Speed</div>
+                    <div class="value">0.16</div>
+                </div>
+                <div class="setting">
+                    <div class="key" data-key="bodyLength">Body Length</div>
+                    <div class="value">2</div>
+                </div>
+                <div class="setting">
+                    <div class="key" data-key="gridSize">Board Size</div>
+                    <div class="value">15</div>
+                </div>
             </div>
-            <div class="controls"></div>
+
+            <div class="score title">
+                Score:
+                <span class="scoreValue points">undefined</span>
+            </div>
+        </div>
+
+        <div class="middle">
+            <div class="game">
+                <div class="canvasWrapper">
+                    <canvas></canvas>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="right">
+            <div class="controls">
+                <div class="title">Controls</div>
+                <div class="control">
+                    <div class="key" data-key="timeScale">Left</div>
+                    <div class="values">
+                        <div class="value">a</div>
+                        <div class="value"><</div>
+                    </div>
+                </div>
+                <div class="control">
+                    <div class="key" data-key="bodyLength">Right</div>
+                    <div class="values">
+                        <div class="value">d</div>
+                        <div class="value">></div>
+                    </div>
+                </div>
+                <div class="control">
+                    <div class="key" data-key="gridSize">Up</div>
+                    <div class="values">
+                        <div class="value">w</div>
+                        <div class="value">⌃</div>
+                    </div>
+                </div>
+                <div class="control">
+                    <div class="key" data-key="gridSize">Down</div>
+                    <div class="values">
+                        <div class="value">s</div>
+                        <div class="value">˅</div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </body>

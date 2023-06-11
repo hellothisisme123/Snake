@@ -14,14 +14,6 @@ checkCanvasSupport()
 
 console.log(canvas.width);
 let game = {
-    snakeColor: getComputedStyle(document.documentElement)
-    .getPropertyValue('--snakeColor'),
-    canvasBackgroundColor: getComputedStyle(document.documentElement)
-    .getPropertyValue('--canvasBackgroundColor'),
-    berryColor: getComputedStyle(document.documentElement)
-    .getPropertyValue('--berryColor'),
-    
-    
     // canvas.width hasnt been set yet
     // canvasSize: canvas.width,
     gridSize: 15,
@@ -48,7 +40,7 @@ let game = {
         // x: Math.floor(Math.random() * 10) * game.blockSize,
         // y: Math.floor(Math.random() * 10) * game.blockSize
     },
-    berries: 0,
+    // berries: 0,
     timeScale: 1 / 6,
     canChangeDirection: true,
     backgroundTiles: [
@@ -83,6 +75,8 @@ let game = {
         ]
     }
 }
+game.berries = game.bodyLength
+points.innerHTML = game.berries
 game.backgroundTiles.forEach((img, i) => {
     img.src = `../production/tiles/sandtile${i}.png`
 })
@@ -106,20 +100,12 @@ function roundDownToMultiple(num, mult) {
 } 
 
 // sets the starting canvas position
-if (canvasWrapper.clientWidth < canvasWrapper.clientHeight) {
-    console.log(canvasWrapper.clientWidth, canvasWrapper.clientHeight)
-    console.log('a');
-
+if (canvasWrapper.width < canvasWrapper.height) {
     canvas.width = roundDownToMultiple(canvasWrapper.clientWidth, game.gridSize)
     canvas.height = canvas.width
-} else if (canvasWrapper.clientWidth > canvasWrapper.clientHeight) {
-    console.log(canvasWrapper.clientWidth, canvasWrapper.clientHeight)
-    console.log('b');
-
-    canvas.width = roundDownToMultiple(canvasWrapper.clientHeight, game.gridSize)
-    canvas.height = canvas.width
 } else {
-    console.log('huh')
+    canvas.height = roundDownToMultiple(canvasWrapper.clientHeight, game.gridSize)
+    canvas.width = canvas.height
 }
 
 // adds an event listener for when the user resizes the window
@@ -171,7 +157,7 @@ function eatBerry() {
     checkBerryPosWithBody()
 
     // sets the innerHTML of the points label
-    points.innerHTML = `Points: ${game.berries}`
+    points.innerHTML = game.berries
 }
 
 function drawSnake() {
@@ -359,10 +345,6 @@ function checkSnakeCollisions() {
 }
 
 function placeBerry() {
-    // exact hitbox
-    // ctx.fillStyle = game.berryColor
-    // ctx.fillRect(game.berryPosition.x, game.berryPosition.y, game.blockSize, game.blockSize)
-
     // image sprite
     ctx.drawImage(game.berryTile, game.berryPosition.x, game.berryPosition.y, game.blockSize, game.blockSize)
 }
