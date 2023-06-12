@@ -548,8 +548,8 @@ function keydown(e) {
                 activeControl.innerHTML = ''
                 return
             }
+            // changes the controls
             game.controls[direction][activeControl.dataset.index] = e.key
-            console.log(game.controls[direction]);
             
             activeControl.dataset.active = 'false'
             
