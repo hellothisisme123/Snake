@@ -33,15 +33,15 @@
                 <div class="title">Settings</div>
                 <div class="setting">
                     <div class="key" data-key="timeScale">Speed</div>
-                    <div class="value">0.16</div>
+                    <input class="value"></input>
                 </div>
                 <div class="setting">
-                    <div class="key" data-key="bodyLength">Body Length</div>
-                    <div class="value">2</div>
+                    <div class="key" data-key="startingBodyLength">Body Length</div>
+                    <input class="value"></input>
                 </div>
                 <div class="setting">
                     <div class="key" data-key="gridSize">Board Size</div>
-                    <div class="value">15</div>
+                    <input class="value"></input>
                 </div>
             </div>
 
@@ -54,6 +54,37 @@
         <div class="middle">
             <div class="game">
                 <div class="canvasWrapper">
+                    <div class="startGame startGameDiv active">Start Game!</div>
+                    <div class="winLoseScreen">
+                        <div class="header">
+                            <div class="title">You Win!</div>
+                        </div>
+
+                        <div class="content">
+                            <div class="score">Score: 10</div>
+    
+                            <div class="highScore">High Score: 7</div>
+    
+                            <div class="winSettings">
+                                <div class="settings">
+                                    <div class="setting" data-key="timeScale">Speed:</div>
+                                    <div class="setting" data-key="startingBodyLength">Body Length:</div>
+                                    <div class="setting" data-key="gridSize">Board Size:</div>
+                                </div>
+                                <div class="values">
+                                    <div class="value">69</div>
+                                    <div class="value">69</div>
+                                    <div class="value">69</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="buttonsWrapper">
+                            <button class="retryBtn">Retry</button>
+                            <button class="restartBtn">Restart</button>
+                            <button class="quitBtn">Quit</button>
+                        </div>
+                    </div>
                     <canvas></canvas>
                 </div>
 

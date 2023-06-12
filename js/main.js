@@ -3,19 +3,22 @@ const canvasWrapper = document.querySelector('.canvasWrapper')
 const winScreen = document.querySelector('.winScreen')
 let ctx
 const points = document.querySelector('.points')
-
+const startGameDiv = document.querySelector('.startGameDiv')
+const winLoseScreen = document.querySelector('.winLoseScreen')
+const retryBtn = document.querySelector('.retryBtn')
+const restartBtn = document.querySelector('.restartBtn')
+const quitBtn = document.querySelector('.quitBtn')
 
 // checks if the user is using a browser that supports canvas
-const checkCanvasSupport = () => {
+function checkCanvasSupport() {
     if (canvas.getContext) ctx = canvas.getContext('2d')
     else alert('Unfortunately your browser doesn\'t support canvas and can\'t load the game. Use a different browser that supports html canvas')
 }
 checkCanvasSupport()
 
-console.log(canvas.width);
+
 let game = {
     // canvas.width hasnt been set yet
-    // canvasSize: canvas.width,
     gridSize: 15,
     // blockSize: canvas.width / game.gridSize,
     direction: 'right',
@@ -29,7 +32,8 @@ let game = {
         x: 0,
         y: 0
     },
-    bodyLength: 2,
+    startingBodyLength: 2,
+    // bodyLength: startingBodyLength,
     controls: {
         up: ['w', 'ArrowUp'],
         left: ['a', 'ArrowLeft'],
@@ -37,11 +41,10 @@ let game = {
         right: ['d', 'ArrowRight']
     },
     berryPosition: {
-        // x: Math.floor(Math.random() * 10) * game.blockSize,
-        // y: Math.floor(Math.random() * 10) * game.blockSize
+        // x and y are set later
     },
     // berries: 0,
-    timeScale: 1 / 6,
+    timeScale: 6,
     canChangeDirection: true,
     backgroundTiles: [
         new Image(),
@@ -73,64 +76,103 @@ let game = {
             new Image(),
             new Image()
         ]
-    }
+    },
+    active: false
 }
-game.berries = game.bodyLength
+game.bodyLength = game.startingBodyLength
+
+loadImages()
+game.berries = game.body.length
 points.innerHTML = game.berries
-game.backgroundTiles.forEach((img, i) => {
-    img.src = `../production/tiles/sandtile${i}.png`
-})
-game.berryTile.src = './production/tiles/berryTile.png'
-game.snakeTiles.head.forEach((img, i) => {
-    img.src = `../production/tiles/snakeface${i}.png`
-})
-game.snakeTiles.tail.forEach((img, i) => {
-    img.src = `../production/tiles/snaketail${i}.png`
-})
-game.snakeTiles.straight.forEach((img, i) => {
-    img.src = `../production/tiles/snakebody${i}.png`
-})
-game.snakeTiles.curved.forEach((img, i) => {
-    img.src = `../production/tiles/snakerotate${i}.png`
-})
+
+canvasSize()
+
+function loadImages() {
+    game.backgroundTiles.forEach((img, i) => {
+        img.src = `../production/tiles/sandtile${i}.png`
+    })
+    game.berryTile.src = './production/tiles/berryTile.png'
+    game.snakeTiles.head.forEach((img, i) => {
+        img.src = `../production/tiles/snakeface${i}.png`
+    })
+    game.snakeTiles.tail.forEach((img, i) => {
+        img.src = `../production/tiles/snaketail${i}.png`
+    })
+    game.snakeTiles.straight.forEach((img, i) => {
+        img.src = `../production/tiles/snakebody${i}.png`
+    })
+    game.snakeTiles.curved.forEach((img, i) => {
+        img.src = `../production/tiles/snakerotate${i}.png`
+    })
+
+    game.dimBackgroundTile = new Image()
+    game.dimBackgroundTile.src = '../production/tiles/dimBackground.png'
+}
 
 function roundDownToMultiple(num, mult) {
-    console.log(num - (num % mult))
     return num - (num % mult);
 } 
 
-// sets the starting canvas position
-if (canvasWrapper.width < canvasWrapper.height) {
-    canvas.width = roundDownToMultiple(canvasWrapper.clientWidth, game.gridSize)
-    canvas.height = canvas.width
-} else {
-    canvas.height = roundDownToMultiple(canvasWrapper.clientHeight, game.gridSize)
-    canvas.width = canvas.height
-}
-
-// adds an event listener for when the user resizes the window
-window.addEventListener('resize', (e) => {
-    if (canvasWrapper.clientWidth < canvasWrapper.clientHeight) {
+function canvasSize() {
+    // sets the starting canvas position
+    if (canvasWrapper.width < canvasWrapper.height) {
         canvas.width = roundDownToMultiple(canvasWrapper.clientWidth, game.gridSize)
         canvas.height = canvas.width
-    } else if (canvasWrapper.clientWidth > canvasWrapper.clientHeight) {
-        canvas.width = roundDownToMultiple(canvasWrapper.clientHeight, game.gridSize)
-        canvas.height = canvas.width
     } else {
-        console.log('huh')
+        canvas.height = roundDownToMultiple(canvasWrapper.clientHeight, game.gridSize)
+        canvas.width = canvas.height
     }
-})
+    
+    // adds an event listener for when the user resizes the window
+    window.addEventListener('resize', (e) => {
+        if (canvasWrapper.clientWidth < canvasWrapper.clientHeight) {
+            canvas.width = roundDownToMultiple(canvasWrapper.clientWidth, game.gridSize)
+            canvas.height = canvas.width
+        } else if (canvasWrapper.clientWidth > canvasWrapper.clientHeight) {
+            canvas.width = roundDownToMultiple(canvasWrapper.clientHeight, game.gridSize)
+            canvas.height = canvas.width
+        } else {
+            console.log('huh')
+        }
+    })
+    
+    // sets game settings
+    // must be after the canvas sizing so that the canvas.width is correct
+    game.blockSize = canvas.width / game.gridSize
+    game.berryPosition.x = Math.floor(Math.random() * game.gridSize) * game.blockSize
+    game.berryPosition.y = Math.floor(Math.random() * game.gridSize) * game.blockSize
+    checkBerryPosWithBody()
 
-// must be after the canvas sizing so that the canvas.width is correct
-game.canvasSize = canvas.width
-game.blockSize = canvas.width / game.gridSize
-game.berryPosition.x = Math.floor(Math.random() * game.gridSize) * game.blockSize
-game.berryPosition.y = Math.floor(Math.random() * game.gridSize) * game.blockSize
+    game.position.x = roundDownToMultiple(game.position.x, game.blockSize)
+    game.position.y = roundDownToMultiple(game.position.y, game.blockSize)
+}
 
 function playerDeath() {
-    clearInterval(playTime)
+    game.active = false
+
+    let winLoseScore = winLoseScreen.querySelector('.score')
+    let winLoseSettings = [...winLoseScreen.querySelectorAll('.setting[data-key]')]
+    let winLoseValue = [...winLoseScreen.querySelectorAll('.value')]
+    winLoseSettings.forEach((setting, i) => {
+        winLoseValue[i].innerHTML = game[setting.dataset.key]
+    })
+
+    winLoseScore.innerHTML = `Score: ${game.body.length}`
+
+    winLoseScreen.classList.add('active')
 
     winScreen.animate({top: '10%'}, {duration: 250, fill: 'forwards'})
+}
+
+function checkBerryPosWithBody() {
+    game.body.forEach(block => {
+        if (block.x == game.berryPosition.x && block.y == game.berryPosition.y) {
+            game.berryPosition.x = Math.floor(Math.random() * game.gridSize) * game.blockSize
+            game.berryPosition.y = Math.floor(Math.random() * game.gridSize) * game.blockSize
+
+            checkBerryPosWithBody()
+        }
+    })
 }
 
 function eatBerry() {
@@ -144,20 +186,7 @@ function eatBerry() {
     game.berryPosition.x = Math.floor(Math.random() * game.gridSize) * game.blockSize
     game.berryPosition.y = Math.floor(Math.random() * game.gridSize) * game.blockSize
 
-    function checkBerryPosWithBody() {
-        game.body.forEach(block => {
-            if (block.x == game.berryPosition.x && block.y == game.berryPosition.y) {
-                game.berryPosition.x = Math.floor(Math.random() * game.gridSize) * game.blockSize
-                game.berryPosition.y = Math.floor(Math.random() * game.gridSize) * game.blockSize
-
-                checkBerryPosWithBody()
-            }
-        })
-    }
     checkBerryPosWithBody()
-
-    // sets the innerHTML of the points label
-    points.innerHTML = game.berries
 }
 
 function drawSnake() {
@@ -268,6 +297,13 @@ function moveSnake() {
 
     // removes last block of the body whenever the body length is lower than the 
     if (game.body.length > game.bodyLength) game.body.pop()
+
+    game.body = removeDuplicates(game.body)
+
+    function removeDuplicates(arr) {
+        return arr.filter((item,
+            index) => arr.indexOf(item) === index);
+    }
 }
 
 function checkSnakeCollisions() {
@@ -309,7 +345,7 @@ function checkSnakeCollisions() {
             eatBerry()
         }
     } else if (game.direction == 'right') {
-        if (game.position.x + game.blockSize > game.canvasSize - game.blockSize) {
+        if (game.position.x + game.blockSize > canvas.width - game.blockSize) {
             // collision with wall
             playerDeath()
             return
@@ -320,7 +356,7 @@ function checkSnakeCollisions() {
             eatBerry()
         }
     } else if (game.direction == 'down') {
-        if (game.position.y + game.blockSize > game.canvasSize - game.blockSize) {
+        if (game.position.y + game.blockSize > canvas.width - game.blockSize) {
             // collision with wall
             playerDeath()
             return
@@ -368,7 +404,90 @@ function drawBackground() {
     }
 }
 
-let playTime = setInterval(() => {
+function dimScreen() {
+    ctx.drawImage(game.dimBackgroundTile, 0, 0, canvas.width, canvas.height)
+}
+
+function setScore() {      
+    // sets the innerHTML of the points label
+    points.innerHTML = game.body.length
+}
+
+let playTime
+function startGame() {
+    game = {
+        // canvas.width hasnt been set yet
+        gridSize: game.gridSize,
+        // blockSize: canvas.width / game.gridSize,
+        direction: 'right',
+        body: [
+            {
+                x: 0,
+                y: 0
+            }
+        ],
+        position: {
+            x: 0,
+            y: 0
+        },
+        // bodyLength: game.bodyLength,
+        startingBodyLength: game.startingBodyLength,
+        controls: {
+            up: ['w', 'ArrowUp'],
+            left: ['a', 'ArrowLeft'],
+            down: ['s', 'ArrowDown'],
+            right: ['d', 'ArrowRight']
+        },
+        berryPosition: {
+            // x and y are set later
+        },
+        // berries: 0,
+        timeScale: game.timeScale,
+        canChangeDirection: true,
+        backgroundTiles: [
+            new Image(),
+            new Image(),
+            new Image(),
+            new Image()
+        ],
+        berryTile: new Image(),
+        snakeTiles: {
+            curved: [
+                new Image(),
+                new Image(),
+                new Image(),
+                new Image()
+            ],
+            straight: [
+                new Image(),
+                new Image()
+            ],
+            head: [
+                new Image(),
+                new Image(),
+                new Image(),
+                new Image()
+            ],
+            tail: [
+                new Image(),
+                new Image(),
+                new Image(),
+                new Image()
+            ]
+        },
+        active: true
+    }
+    game.bodyLength = game.startingBodyLength
+
+    startGameDiv.classList.remove('active')
+    winLoseScreen.classList.remove('active')
+
+    loadImages()
+    
+    canvasSize()
+}
+
+function tick() {
     // draws background
     drawBackground()
 
@@ -378,9 +497,35 @@ let playTime = setInterval(() => {
     // draws the snake
     drawSnake()
 
-    // adjusts the snakes position
-    moveSnake()
-}, 1000 * game.timeScale);
+    if (!game.active) {
+        dimScreen()
+    }
+
+    // set score
+    setScore()
+
+    if (game.active) {
+        // adjusts the snakes position
+        moveSnake()
+    }
+}
+playTime = setInterval(tick, 1000 / game.timeScale);    
+
+startGameDiv.addEventListener('click', e => {
+    startGame()
+})
+
+retryBtn.addEventListener('click', e => {
+    startGame()
+})
+
+restartBtn.addEventListener('click', e => {
+    location.reload()
+})
+
+quitBtn.addEventListener('click', e => {
+    window.close()
+})
 
 // change direction
 window.addEventListener('keydown', (e) => {
@@ -457,5 +602,65 @@ function enableMobileControls() {
         touchendX = e.changedTouches[0].screenX
         touchendY = e.changedTouches[0].screenY
         checkDirection()
+    })
+}
+
+enableSettings()
+function enableSettings() {
+    const settings = [...document.querySelectorAll('.left .setting')]
+    settings.forEach(setting => {
+        let input = setting.querySelector('input')
+        let key = setting.querySelector('.key[data-key]').dataset.key
+        input.value = game[key]
+        
+        input.addEventListener("keydown", e => {
+            if (e.key == 'Enter') {
+                let res = input.value
+                res = parseFloat(res)
+                if (`${res}`.length > 3) res = `${res[0]}${res[1]}${res[2]}`
+                
+                if (isNaN(res)) res = game[key]
+                
+                // only works while the game is inactive
+                if (game.active) {
+                    input.value = game[key]
+                    return
+                }
+                game[key] = res
+                
+                input.value = game[key]
+
+                if (key == 'gridSize') {
+                    canvasSize()
+                } else if (key == 'timeScale') {
+                    clearInterval(playTime)
+                    playTime = setInterval(tick, 1000 / game.timeScale);    
+                }
+            }
+        })
+        
+        input.addEventListener('focusout', e => {
+            let res = input.value
+            res = parseFloat(res)
+            if (`${res}`.length > 3) res = `${res[0]}${res[1]}${res[2]}`
+
+            if (isNaN(res)) res = game[key]
+            
+            // only works while the game is inactive
+            if (game.active) {
+                input.value = game[key]
+                return
+            }
+            game[key] = res
+            
+            input.value = game[key]
+            
+            if (key == 'gridSize') {
+                canvasSize()
+            } else if (key == 'timeScale') {
+                clearInterval(playTime)
+                playTime = setInterval(tick, 1000 / game.timeScale);   
+            }
+        })
     })
 }
