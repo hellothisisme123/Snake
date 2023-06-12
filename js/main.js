@@ -1,6 +1,5 @@
 const canvas = document.querySelector('canvas')
 const canvasWrapper = document.querySelector('.canvasWrapper')
-const winScreen = document.querySelector('.winScreen')
 let ctx
 const points = document.querySelector('.points')
 const startGameDiv = document.querySelector('.startGameDiv')
@@ -160,8 +159,6 @@ function playerDeath() {
     winLoseScore.innerHTML = `Score: ${game.body.length}`
 
     winLoseScreen.classList.add('active')
-
-    winScreen.animate({top: '10%'}, {duration: 250, fill: 'forwards'})
 }
 
 function checkBerryPosWithBody() {
@@ -654,33 +651,7 @@ function enableSettings() {
         let key = setting.querySelector('.key[data-key]').dataset.key
         input.value = game[key]
         
-        input.addEventListener("keydown", e => {
-            if (e.key == 'Enter') {
-                let res = input.value
-                res = parseFloat(res)
-                if (`${res}`.length > 3) res = `${res[0]}${res[1]}${res[2]}`
-                
-                if (isNaN(res)) res = game[key]
-                
-                // only works while the game is inactive
-                if (game.active) {
-                    input.value = game[key]
-                    return
-                }
-                game[key] = res
-                
-                input.value = game[key]
-
-                if (key == 'gridSize') {
-                    canvasSize()
-                } else if (key == 'timeScale') {
-                    clearInterval(playTime)
-                    playTime = setInterval(tick, 1000 / game.timeScale);    
-                }
-            }
-        })
-        
-        input.addEventListener('focusout', e => {
+        function setSetting(e) {
             let res = input.value
             res = parseFloat(res)
             if (`${res}`.length > 3) res = `${res[0]}${res[1]}${res[2]}`
@@ -702,7 +673,9 @@ function enableSettings() {
                 clearInterval(playTime)
                 playTime = setInterval(tick, 1000 / game.timeScale);   
             }
-        })
+        }
+        input.addEventListener("keydown", setSetting)
+        input.addEventListener('focusout', setSetting)
     })
 }
 
