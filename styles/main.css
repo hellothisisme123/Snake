@@ -308,6 +308,14 @@ html {
     grid-template-columns: 1fr 1fr;
 }
 
+.values .value[data-active="true"] {
+    color: #ED687A;
+}
+
+.values .value {
+    user-select: none;
+}
+
 .value {
     display: flex;
     justify-content: center;

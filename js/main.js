@@ -433,10 +433,10 @@ function startGame() {
         // bodyLength: game.bodyLength,
         startingBodyLength: game.startingBodyLength,
         controls: {
-            up: ['w', 'ArrowUp'],
-            left: ['a', 'ArrowLeft'],
-            down: ['s', 'ArrowDown'],
-            right: ['d', 'ArrowRight']
+            up: [game.controls.up[0], game.controls.up[1]],
+            left: [game.controls.left[0], game.controls.left[1]],
+            down: [game.controls.down[0], game.controls.down[1]],
+            right: [game.controls.right[0], game.controls.right[1]]
         },
         berryPosition: {
             // x and y are set later
@@ -528,10 +528,51 @@ quitBtn.addEventListener('click', e => {
 })
 
 // change direction
-window.addEventListener('keydown', (e) => {
-    // prevents the player from changing direction twice in 1 move, allowing them to change direction into themselves
-    if (!game.canChangeDirection) return
+window.addEventListener('keydown', keydown)
 
+function keydown(e) {
+    if (e.repeat) return
+    let controls = [...document.querySelectorAll('.control .values .value')]
+
+    // changes the controls when necessary
+    controls.forEach(control => {
+        if (control.dataset.active == 'true') {
+            let activeControl = control
+            control = control.parentElement.parentElement
+            
+            let direction = control.querySelector('.key').dataset.value
+    
+            if (e.key == 'Escape') {
+                game.controls[direction][activeControl.dataset.index] = ''
+                activeControl.dataset.active = 'false'
+                activeControl.innerHTML = ''
+                return
+            }
+            game.controls[direction][activeControl.dataset.index] = e.key
+            console.log(game.controls[direction]);
+            
+            activeControl.dataset.active = 'false'
+            
+            if (e.key == 'ArrowLeft') {
+                activeControl.innerHTML = '<'
+            } else if (e.key == 'ArrowRight') {
+                activeControl.innerHTML = '>'
+            } else if (e.key == 'ArrowUp') {
+                activeControl.innerHTML = '⌃'
+            } else if (e.key == 'ArrowDown') {
+                activeControl.innerHTML = '˅'
+            } else if (`${e.key}`.length > 1) {
+                activeControl.innerHTML = `${e.key}`[0]
+            } else {
+                activeControl.innerHTML = e.key
+            }
+        }
+    })
+
+    // prevents the player from changing direction twice in 1 move, allowing them to change direction into themselves
+    if (!game.canChangeDirection || !game.active) return
+
+    console.log(e.key)
     if (e.key == game.controls.up[0] || e.key == game.controls.up[1]) {
         if (game.direction == 'down') return
         game.direction = 'up'
@@ -548,7 +589,7 @@ window.addEventListener('keydown', (e) => {
 
     // stops user from changing direction again until canChangeDirection is set to true after the next move
     game.canChangeDirection = false
-})
+}
 
 enableMobileControls()
 function enableMobileControls() {
@@ -662,5 +703,48 @@ function enableSettings() {
                 playTime = setInterval(tick, 1000 / game.timeScale);   
             }
         })
+    })
+}
+
+enableControls()
+function enableControls() {
+    const controls = [...document.querySelectorAll('.control')]
+
+    controls.forEach(control => {
+        const button1 = control.querySelector('.button1')
+        const button2 = control.querySelector('.button2')
+
+        button1.addEventListener('mousedown', e => {
+            controls.forEach(control => {
+                let values = [...control.querySelectorAll('.value')]
+
+                values.forEach(value => {
+                    value.dataset.active = 'false'
+                })
+            })
+
+            if (e.target.dataset.active == 'true') {
+                e.target.dataset.active = 'false'
+                return
+            }
+            e.target.dataset.active = 'true'
+        })
+
+        button2.addEventListener('mousedown', e => {
+            controls.forEach(control => {
+                let values = [...control.querySelectorAll('.value')]
+
+                values.forEach(value => {
+                    value.dataset.active = 'false'
+                })
+            })
+
+            if (e.target.dataset.active == 'true') {
+                e.target.dataset.active = 'false'
+                return
+            }
+            e.target.dataset.active = 'true'
+        })
+
     })
 }
