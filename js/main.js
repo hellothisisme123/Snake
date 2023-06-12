@@ -569,7 +569,6 @@ function keydown(e) {
     // prevents the player from changing direction twice in 1 move, allowing them to change direction into themselves
     if (!game.canChangeDirection || !game.active) return
 
-    console.log(e.key)
     if (e.key == game.controls.up[0] || e.key == game.controls.up[1]) {
         if (game.direction == 'down') return
         game.direction = 'up'
